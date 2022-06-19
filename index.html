@@ -32,6 +32,7 @@
     <strong>File:</strong><span id="is-file"></span><br />
     <strong>Date:</strong><span id="is-date"></span><br />
     <strong>Null:</strong><span id="is-null"></span><br />
+    <strong>URL:</strong><span id="is-url"></span><br />
 
     <script src="dist/variable-inspector.js"></script>
     <script>
@@ -39,13 +40,7 @@
 
         chk(document.getElementById("value-1").value);
 
-        function chk(str) {
-            var v = str;
-            try {
-                v = JSON.parse(v);
-            } catch(e) {
-                
-            }
+        function chk(v) {
             document.getElementById("is-undefined").innerHTML = vi.isUndefined(v);
             document.getElementById("is-boolean").innerHTML = vi.isBoolean(v);
             document.getElementById("is-string").innerHTML = vi.isString(v);
@@ -59,44 +54,23 @@
             document.getElementById("is-date").innerHTML = vi.isDate(v);
             document.getElementById("is-error").innerHTML = vi.isError(v);
             document.getElementById("is-regexp").innerHTML = vi.isRegExp(v);
+            document.getElementById("is-url").innerHTML = vi.isUrl(v);
         }
 
         document.getElementById("value-1").addEventListener("input", function(e) {
-            chk(e.target.value);
+            try {
+                chk(JSON.parse(e.target.value));
+            } catch(err) {
+                chk(e.target.value);
+            }
         });
 
         document.getElementById("value-2").addEventListener("input", function(e) {
-            var v = e.target.files[0];
-            document.getElementById("is-undefined").innerHTML = vi.isUndefined(v);
-            document.getElementById("is-boolean").innerHTML = vi.isBoolean(v);
-            document.getElementById("is-string").innerHTML = vi.isString(v);
-            document.getElementById("is-number").innerHTML = vi.isNumber(v);
-            document.getElementById("is-numeric").innerHTML = vi.isNumeric(v);
-            document.getElementById("is-null").innerHTML = vi.isNull(v);
-            document.getElementById("is-array").innerHTML = vi.isArray(v);
-            document.getElementById("is-object").innerHTML = vi.isObject(v);
-            document.getElementById("is-blob").innerHTML = vi.isBlob(v);
-            document.getElementById("is-file").innerHTML = vi.isFile(v);
-            document.getElementById("is-date").innerHTML = vi.isDate(v);
-            document.getElementById("is-error").innerHTML = vi.isError(v);
-            document.getElementById("is-regexp").innerHTML = vi.isRegExp(v);
+            chk(e.target.files[0]);
         });
 
         document.getElementById("value-3").addEventListener("input", function(e) {
-            var v = new Date(e.target.value);
-            document.getElementById("is-undefined").innerHTML = vi.isUndefined(v);
-            document.getElementById("is-boolean").innerHTML = vi.isBoolean(v);
-            document.getElementById("is-string").innerHTML = vi.isString(v);
-            document.getElementById("is-number").innerHTML = vi.isNumber(v);
-            document.getElementById("is-numeric").innerHTML = vi.isNumeric(v);
-            document.getElementById("is-null").innerHTML = vi.isNull(v);
-            document.getElementById("is-array").innerHTML = vi.isArray(v);
-            document.getElementById("is-object").innerHTML = vi.isObject(v);
-            document.getElementById("is-blob").innerHTML = vi.isBlob(v);
-            document.getElementById("is-file").innerHTML = vi.isFile(v);
-            document.getElementById("is-date").innerHTML = vi.isDate(v);
-            document.getElementById("is-error").innerHTML = vi.isError(v);
-            document.getElementById("is-regexp").innerHTML = vi.isRegExp(v);
+            chk(new Date(e.target.value));
         });
 
 

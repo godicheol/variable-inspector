@@ -51,6 +51,23 @@
     exports.isDate = function(arg) {
         return (arg instanceof Date) && !Number.isNaN(arg.valueOf())
     }
+    exports.isUrl = function(arg) {
+        if (typeof(URL) !== "undefined") {
+            try {
+                return /^(http?:|https?:|file?:)$/i.test(new URL(arg).protocol);
+            } catch(err) {
+                return false;
+            }
+        } else {
+            var re = new RegExp('^(https?:\\/\\/)?'+ // Protocal
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ 
+                '((\\d{1,3}\\.){3}\\d{1,3}))'+ // domain name or ip (v4) address
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+                '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+                '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+            return re.test(arg);
+        }
+    }
     exports.include = function(arg, arr) {
         if (Object.prototype.toString.call(arr) !== '[object Array]') {
             throw new Error("Parameter must be Array");
