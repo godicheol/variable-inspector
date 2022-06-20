@@ -54,7 +54,7 @@
     exports.isUrl = function(arg) {
         if (typeof(URL) !== "undefined") {
             try {
-                return /^(http?:|https?:|file?:)$/i.test(new URL(arg).protocol);
+                return /^(https?:|file:)$/i.test(new URL(arg).protocol);
             } catch(err) {
                 return false;
             }
