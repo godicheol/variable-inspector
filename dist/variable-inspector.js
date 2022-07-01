@@ -3,11 +3,16 @@
 
     var exports = {};
 
+    exports.isEmpty = function(arg) {
+        return (Object.prototype.toString.call(arg) === '[object Array]' && arg.length === 0) ||
+            (typeof(arg) === "object" && arg !== null && Object.keys(arg).length === 0) ||
+            (typeof(arg) === "string" && arg === "");
+    }
     exports.isUndefined = function(arg) {
         return typeof(arg) === "undefined";
     }
     exports.isNull = function(arg) {
-        return arg === null;
+        return (typeof(arg) === "object" && arg === null);
     }
     exports.isBoolean = function(arg) {
         return typeof(arg) === "boolean";
@@ -68,14 +73,78 @@
             return re.test(arg);
         }
     }
-    exports.include = function(arg, arr) {
-        if (Object.prototype.toString.call(arr) !== '[object Array]') {
-            throw new Error("Parameter must be Array");
+    exports.isPhoneNumber = function(arg) {
+        return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im.test(arg);
+    }
+    exports.hasPhoneNumber = function(arg) {
+        return /[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}/im.test(arg);
+    }
+    exports.isEmailAddress = function(arg) {
+        return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(arg);
+    }
+    exports.isCurrency = function(arg) {
+        // USD, WON, JPY, CNY
+        return /(?=.*?\d)^\$?(([1-9]\d{0,2}(,\d{3})*)|\d+)?(\.\d{1,2})?(\s?(\₩|\$|\¥|\Ұ|\円|USD|WON|JPY|CNY))?$/i.test(arg);
+    }
+    exports.isLocalCode = function(arg) {
+        return ["af","af-ZA","ar","ar","bg","bg-BG","ca","ca-AD","cs","cs-CZ","cy","cy-GB","da","da-DK","de","de-DE","el","el-GR","en","en-US","es","es-ES","et","et-EE","eu","eu","fa","fa-IR","fi","fi-FI","fr","fr-FR","he","he-IL","hi","hi-IN","hr","hr-HR","hu","hu-HU","id","id-ID","is","is-IS","it","it-IT","ja","ja-JP","km","km-KH","ko","ko-KR","la","la","lt","lt-LT","lv","lv-LV","mn","mn-MN","nb","nb-NO","nl","nl-NL","nn","nn-NO","pl","pl-PL","pt","pt-PT","ro","ro-RO","ru","ru-RU","sk","sk-SK","sl","sl-SI","sr","sr-RS","sv","sv-SE","th","th-TH","tr","tr-TR","uk","uk-UA","vi","vi-VN","zh","zh-CN"].indexOf(arg) > -1;
+    }
+    exports.isYoutubeUrl = function(arg) {
+        return /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/.test(arg);
+    }
+    exports.include = function(arg, reg) {
+        if (Object.prototype.toString.call(reg) === '[object Array]') {
+            return new RegExp("("+reg.join("|")+")").test(arg);
+        } else if (typeof(reg) === "string" || typeof(reg) === "number") {
+            return new RegExp("("+reg+")").test(arg);
+        } else if (typeof(reg) === "object" && reg !== null) {
+            return Object.keys(reg).find(function(el) {return reg[el] === arg;});
+        } else {
+            return false;
         }
-        return new RegExp("^("+arr.join("|")+")$").test(arg);
     }
 
     if (typeof(window.variableInspector) === "undefined") {
         window.variableInspector = exports;
+    }
+
+    // polyfills
+    if (!Array.prototype.find) {
+        Object.defineProperty(Array.prototype, 'find', {
+          value: function(predicate) {
+            // 1. Let O be ? ToObject(this value).
+            if (this == null) {
+                throw new TypeError('"this" is null or not defined');
+            }
+            var o = Object(this);
+            // 2. Let len be ? ToLength(? Get(O, "length")).
+            var len = o.length >>> 0;
+            // 3. If IsCallable(predicate) is false, throw a TypeError exception.
+            if (typeof predicate !== 'function') {
+                throw new TypeError('predicate must be a function');
+            }
+            // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
+            var thisArg = arguments[1];
+            // 5. Let k be 0.
+            var k = 0;
+            // 6. Repeat, while k < len
+            while (k < len) {
+                // a. Let Pk be ! ToString(k).
+                // b. Let kValue be ? Get(O, Pk).
+                // c. Let testResult be ToBoolean(? Call(predicate, T, « kValue, k, O »)).
+                // d. If testResult is true, return kValue.
+                var kValue = o[k];
+                if (predicate.call(thisArg, kValue, k, o)) {
+                return kValue;
+                }
+                // e. Increase k by 1.
+                k++;
+            }
+            // 7. Return undefined.
+            return undefined;
+            },
+            configurable: true,
+            writable: true
+        });
     }
 })();
