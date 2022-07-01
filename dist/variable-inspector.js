@@ -98,10 +98,13 @@
         } else if (typeof(reg) === "string" || typeof(reg) === "number") {
             return new RegExp("("+reg+")").test(arg);
         } else if (typeof(reg) === "object" && reg !== null) {
-            var keys = Object.keys(reg);
-            var vals = keys.map(function(el) {return reg[el];});
-            return vals.indexOf(arg) > -1;
-            // return Object.keys(reg).find(function(el) {return reg[el] === arg;});
+            if (!Array.prototype.find) {
+                var keys = Object.keys(reg);
+                var vals = keys.map(function(el) {return reg[el];});
+                return vals.indexOf(arg) > -1;
+            } else {
+                return Object.keys(reg).find(function(el) {return reg[el] === arg;});
+            }
         } else {
             return false;
         }
