@@ -56,6 +56,12 @@
     exports.isDate = function(arg) {
         return (arg instanceof Date) && !Number.isNaN(arg.valueOf())
     }
+    exports.isMimeType = function(arg) {
+        return /^(application|audio|font|example|image|message|model|multipart|text|video|x-(?:[0-9A-Za-z!#$%&'*+.^_`|~-]+))\/([0-9A-Za-z!#$%&'*+.^_`|~-]+)((?:[ \t]*;[ \t]*[0-9A-Za-z!#$%&'*+.^_`|~-]+=(?:[0-9A-Za-z!#$%&'*+.^_`|~-]+|\"(?:[^\"\\\\]|\\.)*\"))*)$/.test(arg);
+    }
+    exports.hasMimeType = function(arg) {
+        return /(application|audio|font|example|image|message|model|multipart|text|video|x-(?:[0-9A-Za-z!#$%&'*+.^_`|~-]+))\/([0-9A-Za-z!#$%&'*+.^_`|~-]+)((?:[ \t]*;[ \t]*[0-9A-Za-z!#$%&'*+.^_`|~-]+=(?:[0-9A-Za-z!#$%&'*+.^_`|~-]+|\"(?:[^\"\\\\]|\\.)*\"))*)/.test(arg);
+    }
     exports.isUrl = function(arg) {
         if (typeof(URL) !== "undefined") {
             try {
