@@ -13,7 +13,7 @@
 <body>
     <h1>variable-inspector</h1>
 
-    <textarea id="value-1" cols="30" rows="10">{"a": 1}</textarea><br />
+    <textarea id="value-1" cols="30" rows="10"></textarea><br />
     <input id="value-2" type="file"><br />
     <input id="value-3" type="date">
 
@@ -38,7 +38,8 @@
     <script>
         var vi = variableInspector;
 
-        chk(document.getElementById("value-1").value);
+        document.getElementById("value-1").value = JSON.stringify({"a": 1});
+        chk(JSON.parse(document.getElementById("value-1").value));
 
         function chk(v) {
             document.getElementById("is-undefined").innerHTML = vi.isUndefined(v);
